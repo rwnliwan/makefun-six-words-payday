@@ -49,5 +49,32 @@
 
 ## Bundle / check / submit
 
-- (To be filled: bundle version + sha256 + size, check result, submission ID
-  and live server status.)
+- Bundle (commit `7be77297f18c0011fb872ee567db074c4a3764af`): REFUSED —
+  "the run record is not whole: the prompt: the earliest session opens with
+  no message of the person's in words". Cause: this builder session opens
+  with the coordinator's handoff brief, not Septian's own words; the
+  opening prompt lives in the parent (top-level) session. Per task rules
+  the builder stops here — no `--parent-session`, no `--prompt-origin
+  handed-off` — and the coordinator re-bundles with the parent session /
+  prompt. Session file:
+  `/home/hatch/agents/agent-bf845b9f-d9ec-4cf3-a692-4659ef16af76/sessions/bf845b9f-d9ec-4cf3-a692-4659ef16af76.jsonl`
+- Check (same commit, loose session file as transcripts, 26 Nov ~05:32 WITA):
+  **12 passed, 2 failed, 5 skipped, 5 checked at submission** — not ready.
+  - Passed: competition_open, snapshot (5 files, 5,541 bytes), license_osi
+    (MIT), entrypoint (main.ts / node22), transcripts_present,
+    transcripts_recorded, thinking_wellformed, thinking_in_window,
+    thinking_reproduces (73 of 75 counted lines, 97.3%; main.ts 12 authored
+    lines), thinking_turns (19), thinking_revised (main.ts from 2 messages),
+    thinking_own_work (73/75 own writing).
+  - FAILED thinking_priced: Muse app session carries 0 usage rows. Fix per
+    check: top-level agent runs the muse.db SELECT for agent_id
+    `bf845b9f-d9ec-4cf3-a692-4659ef16af76` (plus its own), writes rows to a
+    file unchanged, re-bundles with `--muse-usage <file>`. A subagent cannot
+    do this itself — its usage rows are written only once its run completes.
+  - FAILED transcripts_run_record: no run record, because no bundle was
+    written. Fix: re-bundle with the parent session / prompt (coordinator).
+  - At submission (all satisfied in reality): repo public, owner.json with
+    wallet present, repo created 2026-11-25T21:29:08Z (after opening
+    16:39:40Z), commit pushed to main.
+- Submit: NOT DONE — blocked on the re-bundle above. Commit for submit will
+  be the HEAD at re-bundle time (see below); submission ID pending.
